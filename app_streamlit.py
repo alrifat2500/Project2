@@ -417,8 +417,8 @@ with st.sidebar:
 tab1, tab2, tab3, tab4 = st.tabs([
     "  💧  Prediksi  ",
     "  📚  Informasi  ",
-    "  👨‍💻  Developer  ",
-    "  📓  Notebook  "
+    "  📓  Notebook  ",
+    "  👨‍💻  Developer  "
 ])
 
 
@@ -537,16 +537,30 @@ with tab1:
         kebutuhan = 3.7 if gender == "Laki-Laki" else 2.7
         persen = min(air / kebutuhan * 100, 100)
 
-        col_ind1, col_ind2, col_ind3 = st.columns(3)
-        with col_ind1:
-            st.metric("💧 Konsumsi Anda", f"{air} liter")
-        with col_ind2:
-            st.metric("🎯 Kebutuhan Harian", f"{kebutuhan} liter")
-        with col_ind3:
-            selisih = round(kebutuhan - air, 1)
-            st.metric("📉 Kekurangan", f"{max(selisih, 0)} liter",
-                      delta=f"{'-' if selisih > 0 else '+'}{abs(selisih)} liter",
-                      delta_color="inverse")
+        selisih = round(kebutuhan - air, 1)
+        kekurangan = max(selisih, 0)
+        delta_sign = "-" if selisih > 0 else "+"
+        delta_color_style = "#ef4444" if selisih > 0 else "#10b981"
+
+        st.markdown(f"""
+        <div style="background:white; border-radius:18px; padding:1.4rem 1.8rem; box-shadow:0 2px 12px rgba(10,37,64,0.07); border:1px solid rgba(10,37,64,0.05); display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div style="text-align:center; flex:1; min-width:120px;">
+                <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:0.3rem;">💧 Konsumsi Anda</div>
+                <div style="font-size:1.6rem; font-weight:800; color:#0a2540; font-family:'Space Mono',monospace;">{air} liter</div>
+            </div>
+            <div style="width:1px; background:#e2e8f0; height:3rem;"></div>
+            <div style="text-align:center; flex:1; min-width:120px;">
+                <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:0.3rem;">🎯 Kebutuhan Harian</div>
+                <div style="font-size:1.6rem; font-weight:800; color:#0a2540; font-family:'Space Mono',monospace;">{kebutuhan} liter</div>
+            </div>
+            <div style="width:1px; background:#e2e8f0; height:3rem;"></div>
+            <div style="text-align:center; flex:1; min-width:120px;">
+                <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:0.3rem;">📉 Kekurangan</div>
+                <div style="font-size:1.6rem; font-weight:800; color:#0a2540; font-family:'Space Mono',monospace;">{kekurangan} liter</div>
+                <div style="font-size:0.82rem; font-weight:600; color:{delta_color_style}; margin-top:2px;">{delta_sign}{abs(selisih)} liter</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown(f"""
         <div class="water-level-bar">
@@ -658,117 +672,92 @@ with tab2:
     <div class="info-card">
         <h3>🔬 Definisi</h3>
         <p>Hidrasi adalah kondisi keseimbangan cairan di dalam tubuh. Tubuh membutuhkan air untuk <b>hampir semua fungsi biologis</b>, mulai dari mengangkut nutrisi, mengatur suhu, melancarkan pencernaan, hingga menjaga konsentrasi dan mood. Kekurangan cairan bahkan 1–2% saja sudah bisa mengganggu fungsi kognitif dan fisik.</p>
+        <hr style="border-color:#e2e8f0; margin:1rem 0;">
+        <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px;">
+                <div style="font-weight:700; color:#ef4444; margin-bottom:0.5rem;">🚨 Tanda-Tanda Dehidrasi</div>
+                <p style="margin:0;">
+                ❌ &nbsp;Mulut dan tenggorokan kering<br>
+                ❌ &nbsp;Urin berwarna kuning gelap<br>
+                ❌ &nbsp;Sakit kepala dan pusing<br>
+                ❌ &nbsp;Mudah lelah dan lemas<br>
+                ❌ &nbsp;Sulit berkonsentrasi<br>
+                ❌ &nbsp;Jarang buang air kecil<br>
+                ❌ &nbsp;Kulit kering dan tidak elastis
+                </p>
+            </div>
+            <div style="width:1px; background:#e2e8f0;"></div>
+            <div style="flex:1; min-width:200px;">
+                <div style="font-weight:700; color:#10b981; margin-bottom:0.5rem;">✅ Tanda-Tanda Hidrasi Baik</div>
+                <p style="margin:0;">
+                ✔️ &nbsp;Urin berwarna kuning muda / jernih<br>
+                ✔️ &nbsp;Kulit lembap dan elastis<br>
+                ✔️ &nbsp;Energi stabil sepanjang hari<br>
+                ✔️ &nbsp;Konsentrasi dan fokus baik<br>
+                ✔️ &nbsp;Buang air kecil 6–8x per hari<br>
+                ✔️ &nbsp;Tidak sering pusing<br>
+                ✔️ &nbsp;Nafas segar
+                </p>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
-
-    # Gejala
-    col_g1, col_g2 = st.columns(2)
-    with col_g1:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #ef4444;">
-            <h3>🚨 Tanda-Tanda Dehidrasi</h3>
-            <p>
-            ❌ &nbsp;Mulut dan tenggorokan kering<br>
-            ❌ &nbsp;Urin berwarna kuning gelap<br>
-            ❌ &nbsp;Sakit kepala dan pusing<br>
-            ❌ &nbsp;Mudah lelah dan lemas<br>
-            ❌ &nbsp;Sulit berkonsentrasi<br>
-            ❌ &nbsp;Jarang buang air kecil<br>
-            ❌ &nbsp;Kulit kering dan tidak elastis
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_g2:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #10b981;">
-            <h3>✅ Tanda-Tanda Hidrasi Baik</h3>
-            <p>
-            ✔️ &nbsp;Urin berwarna kuning muda / jernih<br>
-            ✔️ &nbsp;Kulit lembap dan elastis<br>
-            ✔️ &nbsp;Energi stabil sepanjang hari<br>
-            ✔️ &nbsp;Konsentrasi dan fokus baik<br>
-            ✔️ &nbsp;Buang air kecil 6–8x per hari<br>
-            ✔️ &nbsp;Tidak sering pusing<br>
-            ✔️ &nbsp;Nafas segar
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Faktor yang mempengaruhi
     st.markdown("### 📌 Faktor yang Mempengaruhi Kebutuhan Air")
-
-    col_f1, col_f2, col_f3 = st.columns(3)
-
-    with col_f1:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #f59e0b;">
-            <h3>👤 Usia & Jenis Kelamin</h3>
-            <p>
-            • Pria butuh <b>~3.7 liter/hari</b><br>
-            • Wanita butuh <b>~2.7 liter/hari</b><br>
-            • Lansia lebih rentan dehidrasi karena rasa haus menurun<br>
-            • Anak-anak butuh proporsional terhadap berat badan
-            </p>
+    st.markdown("""
+    <div class="info-card">
+        <div style="display:flex; flex-wrap:wrap; gap:1.2rem;">
+            <div style="flex:1; min-width:160px; border-left:3px solid #f59e0b; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">👤 Usia & Jenis Kelamin</div>
+                <p style="margin:0; font-size:0.88rem;">
+                • Pria butuh <b>~3.7 liter/hari</b><br>
+                • Wanita butuh <b>~2.7 liter/hari</b><br>
+                • Lansia lebih rentan dehidrasi<br>
+                • Anak-anak butuh proporsional terhadap berat badan
+                </p>
+            </div>
+            <div style="flex:1; min-width:160px; border-left:3px solid #8b5cf6; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">🏃 Aktivitas Fisik</div>
+                <p style="margin:0; font-size:0.88rem;">
+                • <b>Rendah</b>: duduk, belajar → kebutuhan standar<br>
+                • <b>Sedang</b>: jalan kaki, kerja → +0.5L<br>
+                • <b>Tinggi</b>: olahraga berat → +1–2L<br>
+                • Minum 200ml setiap 20 menit saat olahraga
+                </p>
+            </div>
+            <div style="flex:1; min-width:160px; border-left:3px solid #ec4899; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">🌤️ Cuaca & Suhu</div>
+                <p style="margin:0; font-size:0.88rem;">
+                • <b>Panas</b> (&gt;30°C): tambah 1–1.5L<br>
+                • <b>Normal</b> (20–30°C): kebutuhan standar<br>
+                • <b>Dingin</b> (&lt;20°C): tetap minum meski tidak haus<br>
+                • Kelembaban tinggi meningkatkan keringat
+                </p>
+            </div>
+            <div style="flex:1; min-width:160px; border-left:3px solid #14b8a6; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">⚖️ Berat Badan</div>
+                <p style="margin:0; font-size:0.88rem;">
+                Rumus: <b>berat badan × 0.033 liter/kg</b><br><br>
+                • 50 kg → 1.65 liter<br>
+                • 70 kg → 2.31 liter<br>
+                • 90 kg → 2.97 liter
+                </p>
+            </div>
+            <div style="flex:1; min-width:160px; border-left:3px solid #f97316; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">🍎 Makanan & Minuman</div>
+                <p style="margin:0; font-size:0.88rem;">
+                • ~20% kebutuhan air bisa dari makanan<br>
+                • Kafein dan alkohol bersifat diuretik<br>
+                • Buah tinggi air: semangka, mentimun, jeruk<br>
+                • Hindari minuman manis berlebihan
+                </p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col_f2:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #8b5cf6;">
-            <h3>🏃 Aktivitas Fisik</h3>
-            <p>
-            • <b>Rendah</b>: duduk, belajar → kebutuhan standar<br>
-            • <b>Sedang</b>: jalan kaki, kerja → +0.5L<br>
-            • <b>Tinggi</b>: olahraga berat → +1–2L<br>
-            • Minum 200ml setiap 20 menit saat olahraga
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_f3:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #ec4899;">
-            <h3>🌤️ Cuaca & Suhu</h3>
-            <p>
-            • <b>Panas</b> (>30°C): tambah 1–1.5L<br>
-            • <b>Normal</b> (20–30°C): kebutuhan standar<br>
-            • <b>Dingin</b> (<20°C): tetap minum meski tidak haus<br>
-            • Kelembaban tinggi meningkatkan keringat
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    col_f4, col_f5 = st.columns(2)
-
-    with col_f4:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #14b8a6;">
-            <h3>⚖️ Berat Badan</h3>
-            <p>
-            Rumus sederhana: <b>berat badan × 0.033 liter/kg</b><br><br>
-            Contoh:<br>
-            • 50 kg → 1.65 liter<br>
-            • 70 kg → 2.31 liter<br>
-            • 90 kg → 2.97 liter
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_f5:
-        st.markdown("""
-        <div class="info-card" style="border-left-color: #f97316;">
-            <h3>🍎 Makanan & Minuman</h3>
-            <p>
-            • ~20% kebutuhan air bisa dari makanan (buah, sayur)<br>
-            • Kafein dan alkohol bersifat diuretik (membuang air)<br>
-            • Buah tinggi air: semangka, mentimun, jeruk<br>
-            • Hindari minuman manis berlebihan
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -845,42 +834,38 @@ with tab2:
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### ⚠️ Dampak Dehidrasi pada Tubuh")
 
-    col_d1, col_d2, col_d3 = st.columns(3)
-    with col_d1:
-        st.markdown("""
-        <div class="info-card" style="border-left-color:#f59e0b;">
-            <h3>🧠 Otak & Mental</h3>
-            <p>
-            Kehilangan 1–2% cairan menurunkan konsentrasi, memori jangka pendek, dan meningkatkan risiko sakit kepala serta kelelahan mental.
-            </p>
+    st.markdown("""
+    <div class="info-card">
+        <div style="display:flex; flex-wrap:wrap; gap:1.2rem;">
+            <div style="flex:1; min-width:180px; border-left:3px solid #f59e0b; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">🧠 Otak & Mental</div>
+                <p style="margin:0; font-size:0.88rem;">
+                Kehilangan 1–2% cairan menurunkan konsentrasi, memori jangka pendek, dan meningkatkan risiko sakit kepala serta kelelahan mental.
+                </p>
+            </div>
+            <div style="width:1px; background:#e2e8f0;"></div>
+            <div style="flex:1; min-width:180px; border-left:3px solid #ef4444; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">💪 Otot & Fisik</div>
+                <p style="margin:0; font-size:0.88rem;">
+                Dehidrasi menyebabkan kram otot, penurunan kekuatan fisik, dan pemulihan lebih lambat setelah olahraga.
+                </p>
+            </div>
+            <div style="width:1px; background:#e2e8f0;"></div>
+            <div style="flex:1; min-width:180px; border-left:3px solid #8b5cf6; padding-left:0.8rem;">
+                <div style="font-weight:700; color:#0a2540; margin-bottom:0.4rem;">🫀 Organ Vital</div>
+                <p style="margin:0; font-size:0.88rem;">
+                Jangka panjang: risiko batu ginjal, infeksi saluran kemih, dan gangguan jantung meningkat signifikan.
+                </p>
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    with col_d2:
-        st.markdown("""
-        <div class="info-card" style="border-left-color:#ef4444;">
-            <h3>💪 Otot & Fisik</h3>
-            <p>
-            Dehidrasi menyebabkan kram otot, penurunan kekuatan fisik, dan pemulihan lebih lambat setelah olahraga.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_d3:
-        st.markdown("""
-        <div class="info-card" style="border-left-color:#8b5cf6;">
-            <h3>🫀 Organ Vital</h3>
-            <p>
-            Jangka panjang: risiko batu ginjal, infeksi saluran kemih, dan gangguan jantung meningkat signifikan.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ===============================
-# TAB 3 — DEVELOPER
+# TAB 4 — DEVELOPER
 # ===============================
-with tab3:
+with tab4:
 
     st.markdown("""
     <div class="hero-card">
@@ -908,7 +893,13 @@ with tab3:
         <div class="info-card" style="border-left-color:#10b981; margin-top: 0.8rem;">
             <h3>📬 Kontak</h3>
             <p>
-            🐙 &nbsp;github.com/alrifat2500<br>
+            🐙 &nbsp;<a href="https://github.com/alrifat2500" target="_blank" style="color:#2196f3; text-decoration:none; font-weight:600;">github.com/alrifat2500</a><br><br>
+            <a href="https://wa.me/6282136829324" target="_blank" style="display:inline-flex; align-items:center; gap:0.5rem; background:#25D366; color:white; padding:0.45rem 1.1rem; border-radius:100px; font-size:0.85rem; font-weight:700; text-decoration:none; margin-top:0.3rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                </svg>
+                Chat WhatsApp
+            </a>
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -940,9 +931,9 @@ with tab3:
         st.markdown("### 🤖 Model Machine Learning")
 
         models_info = [
-            ("🔵", "Logistic Regression", "~99.70%", "Regresi linear untuk klasifikasi biner"),
-            ("🌲", "Random Forest",       "~98.42%", "Ensemble dari banyak decision tree"),
-            ("🌳", "Decision Tree",       "~99.28%", "Pohon keputusan berbasis aturan if-else"),
+            ("🔵", "Logistic Regression", "99.67%", "Regresi linear untuk klasifikasi biner"),
+            ("🌲", "Random Forest",       "98.92%", "Ensemble dari banyak decision tree"),
+            ("🌳", "Decision Tree",       "99.75%", "Pohon keputusan berbasis aturan if-else"),
         ]
 
         for icon, name, acc, desc in models_info:
@@ -972,9 +963,9 @@ with tab3:
     """, unsafe_allow_html=True)
 
 # ===============================
-# TAB 4 — NOTEBOOK
+# TAB 3 — NOTEBOOK
 # ===============================
-with tab4:
+with tab3:
     st.markdown("""
     <div class="hero-card">
         <h1>📓 Notebook Machine Learning</h1>
